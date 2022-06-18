@@ -1,62 +1,53 @@
-const TILE_TYPE = {
-  oposite_edges_oposite_colors: 0,
-  oposite_edges_same_colors: 1
-}
-// it is the answer to the following question:
-// Having a Tile with edges A, B, C, D, is that true that A === C (color-wise)?
+/*
+  classes:
+  Tuple (x, y)
+  LineSegment(tuple1, tuple2)
+*/
 
-const TILE_ROTATION = {
-  0_deg_rot: 0,
-  90_deg_rot: 1,
-  180_deg_rot: 2,
-  270_deg_rot: 3
-} // const means that the object's reference can't change, but the content can.
-
-Object.freeze(TILE_TYPE); // freeze assures that the content can't change either.
-Object.freeze(TILE_ROTATION);
-
-class Tile {
-  constructor(type = TILE_TYPE.oposite_edges_same_colors, rotation = TILE_ROTATION.0_deg_rot) {
-    this.type = type;
-    this.rotation = rotation;
+class Tuple {
+  x;
+  y;
+  constructor(x, y) {
+    this.x = x,
+    this.y = y
   }
 
-  rotate () {
-    this.rotation = (this.rotation + 1) % 4;
+  get first(){
+    return this.x;
   }
 
-  flip () {
-    this.type = (this.type + 1) % 2;
+  get last(){
+    return this.y;
+  }
+
+  print(){
+    console.log("(" + this.x + ", " + this.y + ")");
   }
 }
 
-class Cell { // duple of coordinates
-  constructor (x, y) {
-    this.x = x;
-    this.y = y;
+class LineSegment {
+  a;
+  b;
+  color;
+  constructor(x_a, y_a, x_b, y_b, color = 'white', type = 'straight') {
+    this.a = new Tuple(x_a, y_a),
+    this.b = new Tuple(x_b, y_b),
+    this.color = color,
+    this.type = type
+  }
+
+  lengthVector(){
+    return new Tuple(Math.abs(this.a.x-this.b.x), Math.abs(this.a.y-this.b.y))
   }
 }
 
-class Path {//only connected cells
-  constructor(cells = []) {
-    this.cells = cells
-  }
-
-  get length() {
-    return this.cells.length;
-  }
-
-  check_continuity () {
-    if (this.length >= 2) {
-      for (let i = 0; i < this.length-1; i++) {
-        let curr = this.cells[i];
-        let next = this.cells[i+1];
-        if (
-          !(curr.x === next.x
-          ^ curr.y === next.y)) {
-            return false;
-        }
-      }
-    return true;
+const Tile = {
+  top: {
+    redSegment: new LineSegment(null, null, null, null, 'red',),
+    whiteSegment: new LineSegment(null, null, null, null)
+  },
+  bottom: {
+    redSegment: new LineSegment(null, null, null, null, 'red', 'curly'),
+    whiteSegment: new LineSegment(null, null, null, null, 'white', 'curly')
   }
 }
